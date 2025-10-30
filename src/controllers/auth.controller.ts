@@ -24,14 +24,14 @@ export const AuthController = {
 
       await SessionService.setUserId(idUser);
 
-      return res.status(200).json({
+      res.status(200).json({
         code: CODES_SUCCESS.getUserId,
         message: MESSAGES_SUCCESS.getUserId,
         data: user,
       });
     } catch (e: unknown) {
       const response = getExceptionMessage(e);
-      return res.status(500).json(response);
+      res.status(500).json(response);
     }
   },
 };

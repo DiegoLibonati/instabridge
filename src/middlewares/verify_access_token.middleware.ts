@@ -15,14 +15,16 @@ export const verifyAccessToken = async (
 ) => {
   const INSTAGRAM_USER_ACCESS_TOKEN = envs.INSTAGRAM_USER_ACCESS_TOKEN;
 
-  if (!INSTAGRAM_USER_ACCESS_TOKEN)
-    return res
+  if (!INSTAGRAM_USER_ACCESS_TOKEN) {
+    res
       .status(401)
       .json({
         code: CODES_NOT.foundAccessToken,
         message: MESSAGES_NOT.foundAccessToken,
       })
       .end();
+    return;
+  }
 
   if (!redisClient.isOpen) await redisClient.connect();
 

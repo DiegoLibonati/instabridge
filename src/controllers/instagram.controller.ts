@@ -15,12 +15,12 @@ import { CODES_SUCCESS } from "@src/constants/codes.constant";
 export const InstagramController = {
   alive: async (_: Request, res: Response) => {
     try {
-      return res
+      res
         .status(200)
         .json({ author: "Diego Libonati", version: envs.API_VERSION });
     } catch (e: unknown) {
       const response = getExceptionMessage(e);
-      return res.status(500).json(response);
+      res.status(500).json(response);
     }
   },
   userProfile: async (_: Request, res: Response) => {
@@ -45,14 +45,14 @@ export const InstagramController = {
 
       await SessionService.setUser(user);
 
-      return res.status(200).json({
+      res.status(200).json({
         code: CODES_SUCCESS.getUserProfile,
         message: MESSAGES_SUCCESS.getUserProfile,
         data: profile,
       });
     } catch (e: unknown) {
       const response = getExceptionMessage(e);
-      return res.status(500).json(response);
+      res.status(500).json(response);
     }
   },
 };

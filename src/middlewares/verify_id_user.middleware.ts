@@ -17,13 +17,14 @@ export const verifyIdUser = async (
   const REDIS_INSTAGRAM_USER_ID = await SessionService.getUserId();
 
   if (!REDIS_INSTAGRAM_USER_ID) {
-    return res
+    res
       .status(401)
       .json({
         code: CODES_NOT.foundUserId,
         message: MESSAGES_NOT.foundUserId,
       })
       .end();
+    return;
   }
 
   next();
