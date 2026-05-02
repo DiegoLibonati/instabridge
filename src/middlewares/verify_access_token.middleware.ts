@@ -1,18 +1,17 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 
-import { envs } from "@src/config/env.config";
-import redisClient from "@src/config/redis.config";
+import { envs } from "@/configs/env.config";
 
-import { SessionService } from "@src/services/session.service";
+import { CODES_NOT } from "@/constants/codes.constant";
+import { MESSAGES_NOT } from "@/constants/messages.constant";
 
-import { CODES_NOT } from "@src/constants/codes.constant";
-import { MESSAGES_NOT } from "@src/constants/messages.constant";
+import { SessionService } from "@/services/session.service";
 
 export const verifyAccessToken = async (
   _: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   const INSTAGRAM_USER_ACCESS_TOKEN = envs.INSTAGRAM_USER_ACCESS_TOKEN;
 
   if (!INSTAGRAM_USER_ACCESS_TOKEN) {
@@ -25,8 +24,6 @@ export const verifyAccessToken = async (
       .end();
     return;
   }
-
-  if (!redisClient.isOpen) await redisClient.connect();
 
   const REDIS_INSTAGRAM_ACCESS_TOKEN = await SessionService.getAccessToken();
 

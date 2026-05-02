@@ -1,10 +1,8 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 
-import { MESSAGES_NOT } from "@src/constants/messages.constant";
-import { CODES_NOT } from "@src/constants/codes.constant";
+import { CODES_NOT } from "@/constants/codes.constant";
+import { MESSAGES_NOT } from "@/constants/messages.constant";
 
-export const notFoundHandler = (_: Request, res: Response) => {
-  res
-    .status(404)
-    .json({ code: CODES_NOT.foundRoute, message: MESSAGES_NOT.foundRoute });
+export const notFoundHandler = (_req: Request, res: Response): void => {
+  res.status(404).json({ code: CODES_NOT.foundRoute, message: MESSAGES_NOT.foundRoute });
 };

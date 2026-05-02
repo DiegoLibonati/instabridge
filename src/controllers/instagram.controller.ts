@@ -1,46 +1,40 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
+import type { User } from "@/types/app";
 
-import { Profile, User } from "@src/entities/app";
+import { envs } from "@/configs/env.config";
 
-import redisClient from "@src/config/redis.config";
-import { envs } from "@src/config/env.config";
+import { SessionService } from "@/services/session.service";
+import { InstagramService } from "@/services/instagram.service";
 
-import { SessionService } from "@src/services/session.service";
+import { getExceptionMessage } from "@/helpers/get_exception_message.helper";
 
-import { getExceptionMessage } from "@src/helpers/get_exception_message.helper";
-
-import { MESSAGES_SUCCESS } from "@src/constants/messages.constant";
-import { CODES_SUCCESS } from "@src/constants/codes.constant";
+import { MESSAGES_SUCCESS } from "@/constants/messages.constant";
+import { CODES_SUCCESS } from "@/constants/codes.constant";
 
 export const InstagramController = {
-  alive: async (_: Request, res: Response) => {
+  alive: (_: Request, res: Response): void => {
     try {
-      res
-        .status(200)
-        .json({ author: "Diego Libonati", version: envs.API_VERSION });
+      res.status(200).json({ author: "Diego Libonati", version: envs.API_VERSION });
     } catch (e: unknown) {
-      const response = getExceptionMessage(e);
-      res.status(500).json(response);
+      const { status, ...response } = getExceptionMessage(e);
+      res.status(status).json(response);
     }
   },
-  userProfile: async (_: Request, res: Response) => {
-    const REDIS_INSTAGRAM_USER_ID: string =
-      (await SessionService.getUserId()) as string;
-    const INSTAGRAM_ACCESS_TOKEN =
-      (await SessionService.getAccessToken()) as string;
+  userProfile: async (_: Request, res: Response): Promise<void> => {
+    const REDIS_INSTAGRAM_USER_ID = await SessionService.getUserId();
+    const INSTAGRAM_ACCESS_TOKEN = await SessionService.getAccessToken();
 
     try {
-      const request = await fetch(
-        `${envs.INSTAGRAM_API}/${envs.INSTAGRAM_API_VERSION}/${REDIS_INSTAGRAM_USER_ID}?fields=id,username,account_type,media_count&access_token=${INSTAGRAM_ACCESS_TOKEN}`
+      const data = await InstagramService.getProfile(
+        INSTAGRAM_ACCESS_TOKEN!,
+        REDIS_INSTAGRAM_USER_ID!
       );
 
-      const profile: Profile = await request.json();
-
       const user: User = {
-        id: profile.id,
-        account_type: profile.account_type,
-        media_count: profile.media_count,
-        username: profile.username,
+        id: data.id,
+        account_type: data.account_type,
+        media_count: data.media_count,
+        username: data.username,
       };
 
       await SessionService.setUser(user);
@@ -48,11 +42,11 @@ export const InstagramController = {
       res.status(200).json({
         code: CODES_SUCCESS.getUserProfile,
         message: MESSAGES_SUCCESS.getUserProfile,
-        data: profile,
+        data: data,
       });
     } catch (e: unknown) {
-      const response = getExceptionMessage(e);
-      res.status(500).json(response);
+      const { status, ...response } = getExceptionMessage(e);
+      res.status(status).json(response);
     }
   },
 };

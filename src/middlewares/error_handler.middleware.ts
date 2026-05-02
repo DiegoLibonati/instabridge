@@ -1,16 +1,14 @@
-import { Request, Response, NextFunction } from "express";
+import type { NextFunction, Request, Response } from "express";
 
-import { CODES_ERROR } from "@src/constants/codes.constant";
-import { MESSAGES_ERROR } from "@src/constants/messages.constant";
+import { CODES_ERROR } from "@/constants/codes.constant";
+import { MESSAGES_ERROR } from "@/constants/messages.constant";
 
 export const errorHandler = (
   err: Error,
-  _: Request,
+  _req: Request,
   res: Response,
-  __: NextFunction
-) => {
-  console.error(err.stack);
-  res
-    .status(500)
-    .json({ code: CODES_ERROR.generic, message: MESSAGES_ERROR.generic });
+  _next: NextFunction
+): void => {
+  console.error(err.stack ?? err.message);
+  res.status(500).json({ code: CODES_ERROR.generic, message: MESSAGES_ERROR.generic });
 };

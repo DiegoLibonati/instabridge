@@ -1,19 +1,15 @@
-import { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 
-import redisClient from "@src/config/redis.config";
+import { CODES_NOT } from "@/constants/codes.constant";
+import { MESSAGES_NOT } from "@/constants/messages.constant";
 
-import { SessionService } from "@src/services/session.service";
-
-import { CODES_NOT } from "@src/constants/codes.constant";
-import { MESSAGES_NOT } from "@src/constants/messages.constant";
+import { SessionService } from "@/services/session.service";
 
 export const verifyIdUser = async (
   _: Request,
   res: Response,
   next: NextFunction
-) => {
-  if (!redisClient.isOpen) await redisClient.connect();
-
+): Promise<void> => {
   const REDIS_INSTAGRAM_USER_ID = await SessionService.getUserId();
 
   if (!REDIS_INSTAGRAM_USER_ID) {

@@ -1,4 +1,4 @@
-# Instagram API
+# Instabridge
 
 ## Educational Purpose
 
@@ -8,146 +8,208 @@ The main goal is to explore and demonstrate best practices, patterns, and techno
 
 ## Getting Started
 
-1. Clone the repository with `git clone "repository link"`
-2. Execute: `npm install` or `yarn install` in the terminal
-3. Execute: `docker-compose -f dev.docker-compose.yml build --no-cache` in the terminal
-4. Once built, you must execute the command: `docker-compose -f dev.docker-compose.yml up --force-recreate` in the terminal
+> **Requirements:** [Docker Desktop](https://www.docker.com/products/docker-desktop/) must be installed.
 
-NOTE: You have to be standing in the folder containing the: `dev.docker-compose.yml` and you need to install `Docker Desktop` if you are in Windows.
+1. Clone the repository.
+2. Navigate to the project folder.
+3. Copy the environment file and fill.
+4. Build the Docker images: docker-compose -f dev.docker-compose.yml build --no-cache
+5. Start the containers: docker-compose -f dev.docker-compose.yml up --force-recreate
+
+The API will be available at `http://localhost:5050`.
 
 ## Description
 
-This API is developed with the intention of being able to access the instagram API: `https://graph.instagram.com` in a fast, efficient and well structured way.
+**Instabridge** is a RESTful backend API built with Node.js, TypeScript, and Express that acts as a structured and efficient bridge between your application and the Instagram Graph API (`https://graph.instagram.com`).
+
+The API handles the full authentication and data retrieval flow required to interact with Instagram's platform. It resolves a user's Instagram ID from a given access token, caches both the token and the user ID in Redis to avoid redundant calls to the Instagram API on every request, and exposes clean endpoints to retrieve profile information such as username, account type, and media count.
+
+The caching layer built on Redis ensures that once the authentication flow is completed, subsequent requests are fast and do not repeatedly hit the external Instagram API. The session is persisted across requests using Redis as a key-value store, meaning the app maintains state without requiring a traditional database.
+
+The project follows a layered architecture separating concerns into controllers, services, DAOs, middlewares, and configuration modules. Request validation is handled through middlewares that verify the presence of a valid access token and a resolved user ID before allowing access to protected endpoints. Error handling is centralized and consistent across the entire application.
+
+It is fully containerized with Docker, includes separate environments for development (with hot-reload via nodemon), production (multi-stage build), and testing (isolated Redis instance). The test suite uses Jest with Supertest for integration testing against the real application stack.
 
 ## Technologies used
 
-1. Node JS
+1. Node.js
 2. Typescript
-3. Redis
-4. Docker
+3. Express
+4. Redis
+5. Docker
 
 ## Libraries used
 
 #### Dependencies
 
 ```
-"express": "^4.18.2"
+"express": "^4.21.0"
+"morgan": "^1.10.1"
 "redis": "^4.6.13"
 ```
 
 #### devDependencies
 
 ```
-"@types/express": "^4.17.21"
-"@types/jest": "^29.5.14"
-"@types/node": "^20.10.5"
+"@eslint/js": "^9.0.0"
+"@types/express": "^5.0.0"
+"@types/jest": "^30.0.0"
+"@types/morgan": "^1.9.10"
+"@types/node": "^22.0.0"
 "@types/supertest": "^6.0.2"
-"jest": "^29.7.0"
-"nodemon": "^3.0.2"
+"eslint": "^9.0.0"
+"eslint-config-prettier": "^9.0.0"
+"eslint-plugin-prettier": "^5.0.0"
+"globals": "^15.0.0"
+"husky": "^9.0.0"
+"jest": "^30.0.0"
+"lint-staged": "^15.0.0"
+"prettier": "^3.0.0"
 "supertest": "^7.0.0"
-"ts-jest": "^29.2.5"
-"ts-node": "^10.9.2"
+"ts-jest": "^29.4.6"
 "tsc-alias": "^1.8.16"
-"tsconfig-paths": "^4.2.0"
-"typescript": "^5.3.3"
-"msw": "^2.6.0"
+"tsx": "^4.0.0"
+"typescript": "^5.5.3"
+"typescript-eslint": "^8.0.0"
 ```
 
 ## Portfolio link
 
-[https://diegolibonati.com.ar/#/project/Instagram-API](https://diegolibonati.com.ar/#/project/Instagram-API)
+[https://diegolibonati.com.ar/#/project/instabridge](https://diegolibonati.com.ar/#/project/instabridge)
 
 ## Testing
 
-1. Join to the correct path of the clone
-2. Execute: `yarn test` or `npm test`
+1. Navigate to the project folder
+2. Execute: `npm test`
+
+For coverage report:
+
+```bash
+npm run test:coverage
+```
 
 ## Env Keys
 
-The `PORT` key refers to the port to be used by the backend, by default it uses `5000`.
+| Key                           | Description                                                                       |
+| ----------------------------- | --------------------------------------------------------------------------------- |
+| `PORT`                        | Port the HTTP server listens on (default: `5050`).                                |
+| `API_VERSION`                 | Current API version returned in responses.                                        |
+| `NODE_ENV`                    | Runtime environment (`development`, `production`, `test`).                        |
+| `BASE_URL`                    | Base URL of the deployed API (optional, used in production).                      |
+| `INSTAGRAM_API`               | Base URL for the Instagram Graph API.                                             |
+| `INSTAGRAM_API_VERSION`       | Instagram Graph API version (e.g. `v19.0`).                                       |
+| `INSTAGRAM_SECRET_CLIENT`     | Instagram app secret obtained from Meta Developer Portal.                         |
+| `INSTAGRAM_USER_ACCESS_TOKEN` | User access token generated from your Instagram app. See steps below.             |
+| `REDIS_HOST`                  | Redis host (`redis` when using Docker Compose, `host.docker.internal` otherwise). |
+| `REDIS_PORT`                  | Redis port (default: `6379`).                                                     |
+| `CHOKIDAR_USEPOLLING`         | Enable polling-based file watching for hot-reload in Docker on Windows.           |
+| `CHOKIDAR_INTERVAL`           | Polling interval in milliseconds (default: `100`).                                |
 
-```
-PORT="5000"
-```
-
-The `API_VERSION` key refers to the current API version. In case of modification, modify also the API version.
-
-```
+```bash
+PORT="5050"
 API_VERSION="0.0.1"
-```
+NODE_ENV=development
+BASE_URL=
 
-The `NODE_ENV` is the key to distinguish the environment in which the app is running.
-
-```
-NODE_ENV="development" || "production"
-```
-
-The `BASE_URL` key refers to the URL where the app is hosted.
-
-```
-BASE_URL="https://ig.libonatis.com.ar"
-```
-
-The `INSTAGRAM_API` key refers to the `BASE URL` used by instagram to access the `Instagram Graph` endpoints.
-
-The `INSTAGRAM_API_VERSION` key refers to which version of the instagram API we are going to consume.
-
-The `INSTAGRAM_SECRET_CLIENT` and `INSTAGRAM_USER_ACCESS_TOKEN` keys refer to keys that we will use to be able to consume this Instagram API. Both are obtained by creating an Instagram Application and giving permissions through the link: `developers.facebook.com`. The access token is the user's own which we use and authorize to test.
-We can use internet guides to obtain both keys.
-
-Here are some quick steps to obtain them:
-
-1. Go to Meta for Developers
-2. Create an App
-3. Add a New Product
-4. Adding an Instagram Tester
-5. Activate the Tester
-6. Generate Access Token
-
-IMPORTANT: In this API we do not use the `INSTAGRAM_SECRET_CLIENT` key but it is good to get it and have it just in case.
-
-```
 INSTAGRAM_API="https://graph.instagram.com"
 INSTAGRAM_API_VERSION="v19.0"
 INSTAGRAM_SECRET_CLIENT="YOUR_SECRET_CLIENT"
 INSTAGRAM_USER_ACCESS_TOKEN="YOUR_ACCESS_TOKEN"
-```
 
-The `REDIS_HOST` and `REDIS_PORT` keys are specific to the database we use, in this case Redis.
-
-```
-REDIS_HOST="host.docker.internal"
+REDIS_HOST="redis"
 REDIS_PORT="6379"
+
+CHOKIDAR_USEPOLLING=true
+CHOKIDAR_INTERVAL=100
+```
+
+## Instagram Credentials
+
+### How to obtain `INSTAGRAM_SECRET_CLIENT` and `INSTAGRAM_USER_ACCESS_TOKEN`
+
+#### 1. Create a Meta App
+
+1. Go to [Meta for Developers](https://developers.facebook.com) and log in.
+2. Click **My Apps → Create App**.
+3. Select **Other** as the use case, then choose **Business** as the app type.
+4. Fill in the app name and contact email, then click **Create App**.
+
+#### 2. Add the Instagram Product
+
+1. In your app dashboard, scroll down to **Add Products to Your App**.
+2. Find **Instagram** and click **Set Up**.
+
+#### 3. Get the App Secret (`INSTAGRAM_SECRET_CLIENT`)
+
+1. Go to **App Settings → Basic**.
+2. Click **Show** next to **App Secret** and copy the value.
+3. Set it as `INSTAGRAM_SECRET_CLIENT` in your `.env`.
+
+#### 4. Add a Test User and generate the Access Token (`INSTAGRAM_USER_ACCESS_TOKEN`)
+
+1. In the left sidebar, go to **Instagram → API Setup with Instagram Login** (or **Basic Display**).
+2. Scroll to **User Token Generator** and click **Add or Remove Instagram Testers**.
+3. Invite your Instagram account as a tester.
+4. Accept the invitation from your Instagram account: go to **Settings → Apps and Websites → Tester Invites**.
+5. Back in the developer dashboard under **User Token Generator**, click **Generate Token** next to your account.
+6. Authorize the app and copy the generated token.
+7. Set it as `INSTAGRAM_USER_ACCESS_TOKEN` in your `.env`.
+
+> **Note:** User access tokens expire. If the API starts returning 400 errors, generate a new token and update your `.env`. You will also need to run `docker exec -it <redis-container> redis-cli FLUSHALL` so the new token replaces the cached one.
+
+## Security
+
+### npm audit
+
+Check for vulnerabilities in dependencies:
+
+```bash
+npm audit
+```
+
+Fix vulnerabilities automatically (when a safe upgrade exists):
+
+```bash
+npm audit fix
 ```
 
 ## Endpoints
 
-Currently we have an auth endpoint, in which we use the access token to generate our `idUser`. Then we will be able to access the `instagramRoutes.ts` endpoints thanks to having previously generated the `idUser`.
+The required call order is: **auth first, then instagram routes**. The auth endpoint resolves and caches the user ID in Redis. Instagram endpoints require both a valid access token and a cached user ID to work.
 
-That is to say, first we will execute the endpoint: `/v1/auth/user_id` this `idUser` will be saved in Redis. Once this `idUser` is obtained we will be able to consume the `instagramRoutes.ts` endpoints.
+### Health
 
-### Auth Route
+| Method | Route     | Auth required |
+| ------ | --------- | ------------- |
+| GET    | `/health` | No            |
 
-- **Endpoint Name**: Get User ID
-- **Endpoint Method**: GET
-- **Endpoint Route**: /v1/auth/user_id
-- **Endpoint Fn**: This endpoint returns the `idUser` in order to consume the `Instagram Graph API` endpoints. This endpoint will return the `idUser` of the access token generated in our APP.
-- **Endpoint Params**: None
-
-### Instagram Route
-
-- **Endpoint Name**: Alive
-- **Endpoint Method**: GET
-- **Endpoint Route**: /v1/instagram/alive
-- **Endpoint Fn**: This endpoint returns the current version of my API, along with additional information such as the author.
-- **Endpoint Params**: None
+Returns `{ "status": "ok" }`. Used to verify the server is running.
 
 ---
 
-- **Endpoint Name**: Get User Profile
-- **Endpoint Method**: GET
-- **Endpoint Route**: /v1/instagram/user/profile
-- **Endpoint Fn**: This endpoint returns information about the profile based on the `idUser` previously generated. It will return the following fields: id, username, account_type, media_count
-- **Endpoint Params**: None
+### Auth
+
+| Method | Route                  | Auth required |
+| ------ | ---------------------- | ------------- |
+| GET    | `/api/v1/auth/user_id` | Access token  |
+
+Resolves the Instagram user ID from the configured access token and caches it in Redis. **Must be called once before using any Instagram endpoint.**
+
+---
+
+### Instagram
+
+| Method | Route                            | Auth required          |
+| ------ | -------------------------------- | ---------------------- |
+| GET    | `/api/v1/instagram/alive`        | Access token + user ID |
+| GET    | `/api/v1/instagram/user/profile` | Access token + user ID |
+
+**`GET /api/v1/instagram/alive`**
+Returns API metadata (author, version).
+
+**`GET /api/v1/instagram/user/profile`**
+Returns the Instagram profile of the authenticated user: `id`, `username`, `account_type`, `media_count`.
 
 ## Known Issues
+
+None at the moment.

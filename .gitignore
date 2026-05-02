@@ -1,7 +1,25 @@
-node_modules
-volumes
-dist
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+coverage/
+
+# Environment variables
+.env
+.env.development
+.env.production
+
+# Uploads
+uploads/
+
+# Logs
+npm-debug.log*
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
 
 package-lock.json
-yarn.lock
-.env
+volumes

@@ -1,25 +1,25 @@
 import express from "express";
+import morgan from "morgan";
 
-import routes from "@src/routes";
+import routes from "@/routes";
 
-import { notFoundHandler } from "@src/middlewares/not_found_handler.middleware";
-import { errorHandler } from "@src/middlewares/error_handler.middleware";
+import { notFoundHandler } from "@/middlewares/not_found_handler.middleware";
+import { errorHandler } from "@/middlewares/error_handler.middleware";
+
+import { envs } from "@/configs/env.config";
 
 const app: express.Application = express();
 
 // Middlewares
-app.use(express.urlencoded({ extended: false }));
+app.use(morgan(envs.ENV === "production" ? "combined" : "dev"));
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // Routes
-app.use("/api/v1", routes);
-app.use("/api/v1/alive", (_, res) => {
-  res.status(200).json({
-    author: "Diego Libonati",
-    name: "Instagram-API",
-    version: "1.1.0",
-  });
+app.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok" });
 });
+app.use("/api/v1", routes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

@@ -1,4 +1,4 @@
-import { CodesError, CodesNot, CodesSuccess } from "@src/entities/constants";
+import type { CodesError, CodesNot, CodesSuccess } from "@/types/constants";
 
 export const CODES_SUCCESS: CodesSuccess = {
   getUserId: "SUCCESS_GET_USER_ID",

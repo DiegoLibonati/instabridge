@@ -1,0 +1,10 @@
+export const mockEnvs = {
+  PORT: "5050",
+  API_VERSION: "0.0.1",
+  INSTAGRAM_API: "https://graph.instagram.com",
+  INSTAGRAM_API_VERSION: "v19.0",
+  INSTAGRAM_SECRET_CLIENT: "YOUR_SECRET_CLIENT",
+  INSTAGRAM_USER_ACCESS_TOKEN: "YOUR_ACCESS_TOKEN",
+  REDIS_HOST: "redis-test-db",
+  REDIS_PORT: "6379",
+};

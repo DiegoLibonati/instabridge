@@ -1,15 +1,15 @@
-import { User } from "@src/entities/app";
+import type { User } from "@/types/app";
 
-import { RedisDAO } from "@src/daos/redis.dao";
+import { RedisDAO } from "@/daos/redis.dao";
 
 export const SessionService = {
-  getUserId: async () => RedisDAO.getValue("idUser"),
-  getAccessToken: async () => RedisDAO.getValue("access_token"),
-  getUser: async () => RedisDAO.getValue("user"),
-  setUserId: async (idUser: string) => RedisDAO.setValue("idUser", idUser),
-  setAccessToken: async (accessToken: string) =>
+  getUserId: async (): Promise<string | null> => RedisDAO.getValue("idUser"),
+  getAccessToken: async (): Promise<string | null> => RedisDAO.getValue("access_token"),
+  getUser: async (): Promise<string | null> => RedisDAO.getValue("user"),
+  setUserId: async (idUser: string): Promise<string | null> => RedisDAO.setValue("idUser", idUser),
+  setAccessToken: async (accessToken: string): Promise<string | null> =>
     RedisDAO.setValue("access_token", accessToken),
-  setUser: async (user: User) =>
+  setUser: async (user: User): Promise<string | null> =>
     RedisDAO.setValue("user", JSON.stringify(user)),
-  deleteUserId: async () => RedisDAO.deleteKey("idUser"),
+  deleteUserId: async (): Promise<number> => RedisDAO.deleteKey("idUser"),
 };

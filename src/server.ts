@@ -1,15 +1,20 @@
-import { envs } from "@src/config/env.config";
+import redisClient from "@/configs/redis.config";
+import { envs } from "@/configs/env.config";
 
-import app from "@src/app";
+import app from "@/app";
 
 const PORT = envs.PORT;
 const ENV = envs.ENV;
 const BASE_URL = envs.BASE_URL;
 
-const onInit = () => {
+const onInit = (): void => {
   const baseUrl = ENV === "development" ? `http://localhost:${PORT}` : BASE_URL;
-
-  console.log(`🚀 Server running in ${ENV} mode on ${baseUrl}`);
+  console.log(`Server running in ${ENV} mode on ${baseUrl}`);
 };
 
-app.listen(PORT, onInit);
+const start = async (): Promise<void> => {
+  await redisClient.connect();
+  app.listen(PORT, onInit);
+};
+
+void start();

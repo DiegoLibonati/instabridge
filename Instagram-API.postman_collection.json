@@ -1,303 +1,350 @@
 {
-	"info": {
-		"_postman_id": "a0f1ef90-2033-461f-85a0-3b795f6f6aa0",
-		"name": "Instagram-API",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "27611586"
-	},
-	"item": [
-		{
-			"name": "Auth",
-			"item": [
-				{
-					"name": "GET - Get User ID",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{APP_URL}}/auth/user_id",
-							"host": [
-								"{{APP_URL}}"
-							],
-							"path": [
-								"auth",
-								"user_id"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "Ok.",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "IGQWRPejZANQTZAQTGhYeVl5OHZAwNG5kY0g2TjVTUUhsbHJ2aVQyZAEJlaWZAoOE5aWHE1U2RYb3dlWGF2RVpXVU5Wckp2MnE0bzFEZAjVCSjhQOTVveG9FTUxoNERPbzE0TXJoYW9TQlduV05YZAnVHZATNSZADdZAU1BlT1EZD",
-										"type": "text",
-										"disabled": true
-									}
-								],
-								"url": {
-									"raw": "{{APP_URL}}/auth/user_id",
-									"host": [
-										"{{APP_URL}}"
-									],
-									"path": [
-										"auth",
-										"user_id"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": null,
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "108"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"6c-xgQXrwAb4UdwQncZVn3dGNnTHhw\""
-								},
-								{
-									"key": "Date",
-									"value": "Sat, 27 Sep 2025 20:42:47 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"code\": \"SUCCESS_GET_USER_ID\",\n    \"message\": \"Successfully found the user id.\",\n    \"data\": {\n        \"id\": \"12123123123123123123\"\n    }\n}"
-						}
-					]
-				}
-			]
-		},
-		{
-			"name": "Instagram",
-			"item": [
-				{
-					"name": "GET - Alive",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "IGQWRPejZANQTZAQTGhYeVl5OHZAwNG5kY0g2TjVTUUhsbHJ2aVQyZAEJlaWZAoOE5aWHE1U2RYb3dlWGF2RVpXVU5Wckp2MnE0bzFEZAjVCSjhQOTVveG9FTUxoNERPbzE0TXJoYW9TQlduV05YZAnVHZATNSZADdZAU1BlT1EZD",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{APP_URL}}/instagram/alive",
-							"host": [
-								"{{APP_URL}}"
-							],
-							"path": [
-								"instagram",
-								"alive"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "Ok.",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "IGQWRPejZANQTZAQTGhYeVl5OHZAwNG5kY0g2TjVTUUhsbHJ2aVQyZAEJlaWZAoOE5aWHE1U2RYb3dlWGF2RVpXVU5Wckp2MnE0bzFEZAjVCSjhQOTVveG9FTUxoNERPbzE0TXJoYW9TQlduV05YZAnVHZATNSZADdZAU1BlT1EZD",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "{{APP_URL}}/instagram/alive",
-									"host": [
-										"{{APP_URL}}"
-									],
-									"path": [
-										"instagram",
-										"alive"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": null,
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "45"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"2d-7MpgzxHZGbgyE0skvEP49+7bjZQ\""
-								},
-								{
-									"key": "Date",
-									"value": "Sat, 27 Sep 2025 20:43:13 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"author\": \"Diego Libonati\",\n    \"version\": \"0.0.1\"\n}"
-						}
-					]
-				},
-				{
-					"name": "GET - Get User Profile",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "IGQWRPejZANQTZAQTGhYeVl5OHZAwNG5kY0g2TjVTUUhsbHJ2aVQyZAEJlaWZAoOE5aWHE1U2RYb3dlWGF2RVpXVU5Wckp2MnE0bzFEZAjVCSjhQOTVveG9FTUxoNERPbzE0TXJoYW9TQlduV05YZAnVHZATNSZADdZAU1BlT1EZD",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{APP_URL}}/instagram/user/profile",
-							"host": [
-								"{{APP_URL}}"
-							],
-							"path": [
-								"instagram",
-								"user",
-								"profile"
-							]
-						}
-					},
-					"response": [
-						{
-							"name": "Ok.",
-							"originalRequest": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "IGQWRPejZANQTZAQTGhYeVl5OHZAwNG5kY0g2TjVTUUhsbHJ2aVQyZAEJlaWZAoOE5aWHE1U2RYb3dlWGF2RVpXVU5Wckp2MnE0bzFEZAjVCSjhQOTVveG9FTUxoNERPbzE0TXJoYW9TQlduV05YZAnVHZATNSZADdZAU1BlT1EZD",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "{{APP_URL}}/instagram/user/profile",
-									"host": [
-										"{{APP_URL}}"
-									],
-									"path": [
-										"instagram",
-										"user",
-										"profile"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": null,
-							"header": [
-								{
-									"key": "X-Powered-By",
-									"value": "Express"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json; charset=utf-8"
-								},
-								{
-									"key": "Content-Length",
-									"value": "187"
-								},
-								{
-									"key": "ETag",
-									"value": "W/\"bb-W362FtukhvYoaifBjqogXVw13Pc\""
-								},
-								{
-									"key": "Date",
-									"value": "Sat, 27 Sep 2025 20:43:34 GMT"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=5"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"code\": \"SUCCESS_GET_USER_PROFILE\",\n    \"message\": \"Successfully found profile user.\",\n    \"data\": {\n        \"id\": \"12123123123123123123\",\n        \"username\": \"die_libonati\",\n        \"account_type\": \"MEDIA_CREATOR\",\n        \"media_count\": 5\n    }\n}"
-						}
-					]
-				}
-			]
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "APP_URL",
-			"value": "http://localhost:5000/api/v1",
-			"type": "string"
-		}
-	]
+  "info": {
+    "_postman_id": "a0f1ef90-2033-461f-85a0-3b795f6f6aa0",
+    "name": "Instabridge",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "27611586"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "GET - Get User ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{APP_URL}}/auth/user_id",
+              "host": ["{{APP_URL}}"],
+              "path": ["auth", "user_id"]
+            }
+          },
+          "response": [
+            {
+              "name": "Ok.",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "IGQWRPejZANQTZAQTGhYeVl5OHZAwNG5kY0g2TjVTUUhsbHJ2aVQyZAEJlaWZAoOE5aWHE1U2RYb3dlWGF2RVpXVU5Wckp2MnE0bzFEZAjVCSjhQOTVveG9FTUxoNERPbzE0TXJoYW9TQlduV05YZAnVHZATNSZADdZAU1BlT1EZD",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "url": {
+                  "raw": "{{APP_URL}}/auth/user_id",
+                  "host": ["{{APP_URL}}"],
+                  "path": ["auth", "user_id"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "108"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"6c-xgQXrwAb4UdwQncZVn3dGNnTHhw\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Sep 2025 20:42:47 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"code\": \"SUCCESS_GET_USER_ID\",\n    \"message\": \"Successfully found the user id.\",\n    \"data\": {\n        \"id\": \"12123123123123123123\"\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Instagram",
+      "item": [
+        {
+          "name": "GET - Alive",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "IGQWRPejZANQTZAQTGhYeVl5OHZAwNG5kY0g2TjVTUUhsbHJ2aVQyZAEJlaWZAoOE5aWHE1U2RYb3dlWGF2RVpXVU5Wckp2MnE0bzFEZAjVCSjhQOTVveG9FTUxoNERPbzE0TXJoYW9TQlduV05YZAnVHZATNSZADdZAU1BlT1EZD",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{APP_URL}}/instagram/alive",
+              "host": ["{{APP_URL}}"],
+              "path": ["instagram", "alive"]
+            }
+          },
+          "response": [
+            {
+              "name": "Ok.",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "IGQWRPejZANQTZAQTGhYeVl5OHZAwNG5kY0g2TjVTUUhsbHJ2aVQyZAEJlaWZAoOE5aWHE1U2RYb3dlWGF2RVpXVU5Wckp2MnE0bzFEZAjVCSjhQOTVveG9FTUxoNERPbzE0TXJoYW9TQlduV05YZAnVHZATNSZADdZAU1BlT1EZD",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{APP_URL}}/instagram/alive",
+                  "host": ["{{APP_URL}}"],
+                  "path": ["instagram", "alive"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "45"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"2d-7MpgzxHZGbgyE0skvEP49+7bjZQ\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Sep 2025 20:43:13 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"author\": \"Diego Libonati\",\n    \"version\": \"0.0.1\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "GET - Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "IGQWRPejZANQTZAQTGhYeVl5OHZAwNG5kY0g2TjVTUUhsbHJ2aVQyZAEJlaWZAoOE5aWHE1U2RYb3dlWGF2RVpXVU5Wckp2MnE0bzFEZAjVCSjhQOTVveG9FTUxoNERPbzE0TXJoYW9TQlduV05YZAnVHZATNSZADdZAU1BlT1EZD",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{APP_URL}}/instagram/user/profile",
+              "host": ["{{APP_URL}}"],
+              "path": ["instagram", "user", "profile"]
+            }
+          },
+          "response": [
+            {
+              "name": "Ok.",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "IGQWRPejZANQTZAQTGhYeVl5OHZAwNG5kY0g2TjVTUUhsbHJ2aVQyZAEJlaWZAoOE5aWHE1U2RYb3dlWGF2RVpXVU5Wckp2MnE0bzFEZAjVCSjhQOTVveG9FTUxoNERPbzE0TXJoYW9TQlduV05YZAnVHZATNSZADdZAU1BlT1EZD",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{APP_URL}}/instagram/user/profile",
+                  "host": ["{{APP_URL}}"],
+                  "path": ["instagram", "user", "profile"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "187"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"bb-W362FtukhvYoaifBjqogXVw13Pc\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 27 Sep 2025 20:43:34 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"code\": \"SUCCESS_GET_USER_PROFILE\",\n    \"message\": \"Successfully found profile user.\",\n    \"data\": {\n        \"id\": \"12123123123123123123\",\n        \"username\": \"die_libonati\",\n        \"account_type\": \"MEDIA_CREATOR\",\n        \"media_count\": 5\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET - Health",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "IGQWRPejZANQTZAQTGhYeVl5OHZAwNG5kY0g2TjVTUUhsbHJ2aVQyZAEJlaWZAoOE5aWHE1U2RYb3dlWGF2RVpXVU5Wckp2MnE0bzFEZAjVCSjhQOTVveG9FTUxoNERPbzE0TXJoYW9TQlduV05YZAnVHZATNSZADdZAU1BlT1EZD",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/health",
+              "host": ["{{BASE_URL}}"],
+              "path": ["health"]
+            }
+          },
+          "response": [
+            {
+              "name": "Ok.",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "IGQWRPejZANQTZAQTGhYeVl5OHZAwNG5kY0g2TjVTUUhsbHJ2aVQyZAEJlaWZAoOE5aWHE1U2RYb3dlWGF2RVpXVU5Wckp2MnE0bzFEZAjVCSjhQOTVveG9FTUxoNERPbzE0TXJoYW9TQlduV05YZAnVHZATNSZADdZAU1BlT1EZD",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{BASE_URL}}/health",
+                  "host": ["{{BASE_URL}}"],
+                  "path": ["health"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "15"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"f-VaSQ4oDUiZblZNAEkkN+sX+q3Sg\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Sat, 02 May 2026 14:27:51 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"status\": \"ok\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "requests": {},
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "requests": {},
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "APP_URL",
+      "value": "http://localhost:5050/api/v1"
+    },
+    {
+      "key": "BASE_URL",
+      "value": ""
+    }
+  ]
 }
