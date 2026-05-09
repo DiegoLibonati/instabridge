@@ -15,6 +15,12 @@ const buildNext = (): NextFunction => jest.fn();
 
 describe("error_handler.middleware", () => {
   describe("errorHandler", () => {
+    beforeEach(() =>
+      jest.spyOn(console, "error").mockImplementation(() => {
+        // Empty fn
+      })
+    );
+
     it("should respond with 500 and generic error body for any error", () => {
       const err: Error = new Error("Something failed");
       const req: Request = buildReq();

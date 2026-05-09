@@ -46,6 +46,12 @@ describe("instagram.route", () => {
   });
 
   describe(`GET ${baseUrl}/user/profile`, () => {
+    beforeEach(() =>
+      jest.spyOn(console, "error").mockImplementation(() => {
+        // Empty fn
+      })
+    );
+
     it("should return 200 with SUCCESS_GET_USER_PROFILE code and profile data", async () => {
       (SessionService.getAccessToken as jest.Mock).mockResolvedValue("test_token");
       (SessionService.getUserId as jest.Mock).mockResolvedValue("12345");

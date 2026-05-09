@@ -48,6 +48,12 @@ describe("instagram.controller", () => {
   });
 
   describe("userProfile", () => {
+    beforeEach(() =>
+      jest.spyOn(console, "error").mockImplementation(() => {
+        // Empty fn
+      })
+    );
+
     it("should return 200 with SUCCESS_GET_USER_PROFILE code and profile data when successful", async () => {
       (SessionService.getUserId as jest.Mock).mockResolvedValue("12345");
       (SessionService.getAccessToken as jest.Mock).mockResolvedValue("test_token");

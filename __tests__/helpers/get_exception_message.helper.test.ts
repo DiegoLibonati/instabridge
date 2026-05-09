@@ -4,6 +4,12 @@ import { getExceptionMessage } from "@/helpers/get_exception_message.helper";
 
 describe("get_exception_message.helper", () => {
   describe("getExceptionMessage", () => {
+    beforeEach(() =>
+      jest.spyOn(console, "error").mockImplementation(() => {
+        // Empty fn
+      })
+    );
+
     it("should return 500 with ERROR_GENERIC code for Error instances", () => {
       const result: ExceptionInfo = getExceptionMessage(new Error("Something broke"));
 

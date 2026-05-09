@@ -14,6 +14,12 @@ const baseUrl = "/api/v1/auth";
 
 describe("auth.route", () => {
   describe(`GET ${baseUrl}/user_id`, () => {
+    beforeEach(() =>
+      jest.spyOn(console, "error").mockImplementation(() => {
+        // Empty fn
+      })
+    );
+
     it("should return 200 with user id data when token and Instagram API are available", async () => {
       (SessionService.getAccessToken as jest.Mock).mockResolvedValue("test_token");
       (InstagramService.getAuthId as jest.Mock).mockResolvedValue({ id: "12345" });

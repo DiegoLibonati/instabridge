@@ -26,6 +26,12 @@ const buildRes = (): Response => {
 
 describe("auth.controller", () => {
   describe("getUserId", () => {
+    beforeEach(() =>
+      jest.spyOn(console, "error").mockImplementation(() => {
+        // Empty fn
+      })
+    );
+
     it("should return 200 with SUCCESS_GET_USER_ID code and auth data when successful", async () => {
       (SessionService.getAccessToken as jest.Mock).mockResolvedValue("test_token");
       (InstagramService.getAuthId as jest.Mock).mockResolvedValue(mockMe);
