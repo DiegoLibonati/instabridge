@@ -6,18 +6,6 @@ This project was created primarily for **educational and learning purposes**.
 While it is well-structured and could technically be used in production, it is **not intended for commercialization**.  
 The main goal is to explore and demonstrate best practices, patterns, and technologies in software development.
 
-## Getting Started
-
-> **Requirements:** [Docker Desktop](https://www.docker.com/products/docker-desktop/) must be installed.
-
-1. Clone the repository.
-2. Navigate to the project folder.
-3. Copy the environment file and fill.
-4. Build the Docker images: docker-compose -f dev.docker-compose.yml build --no-cache
-5. Start the containers: docker-compose -f dev.docker-compose.yml up --force-recreate
-
-The API will be available at `http://localhost:5050`.
-
 ## Description
 
 **Instabridge** is a RESTful backend API built with Node.js, TypeScript, and Express that acts as a structured and efficient bridge between your application and the Instagram Graph API (`https://graph.instagram.com`).
@@ -73,22 +61,21 @@ It is fully containerized with Docker, includes separate environments for develo
 "typescript-eslint": "^8.0.0"
 ```
 
-## Portfolio link
+## Getting Started
 
-[https://diegolibonati.com.ar/#/project/instabridge](https://diegolibonati.com.ar/#/project/instabridge)
+> **Requirements:** [Docker Desktop](https://www.docker.com/products/docker-desktop/) must be installed.
 
-## Testing
+1. Clone the repository.
+2. Navigate to the project folder.
+3. Copy `.env.example` to `.env` and fill in the required values (see [Env Keys](#env-keys) for a full reference and [Instagram Credentials](#instagram-credentials) for how to obtain the Meta-issued secrets).
+4. Build the Docker images: `docker-compose -f dev.docker-compose.yml build --no-cache`
+5. Start the containers: `docker-compose -f dev.docker-compose.yml up --force-recreate`
 
-1. Navigate to the project folder
-2. Execute: `npm test`
-
-For coverage report:
-
-```bash
-npm run test:coverage
-```
+The API will be available at `http://localhost:5050`.
 
 ## Env Keys
+
+The application reads the following variables from your `.env` at startup:
 
 | Key                           | Description                                                                       |
 | ----------------------------- | --------------------------------------------------------------------------------- |
@@ -125,6 +112,8 @@ CHOKIDAR_INTERVAL=100
 
 ## Instagram Credentials
 
+The two Meta-issued values above (`INSTAGRAM_SECRET_CLIENT` and `INSTAGRAM_USER_ACCESS_TOKEN`) require creating an app in the Meta Developer Portal. The steps below walk through that process.
+
 ### How to obtain `INSTAGRAM_SECRET_CLIENT` and `INSTAGRAM_USER_ACCESS_TOKEN`
 
 #### 1. Create a Meta App
@@ -157,23 +146,9 @@ CHOKIDAR_INTERVAL=100
 
 > **Note:** User access tokens expire. If the API starts returning 400 errors, generate a new token and update your `.env`. You will also need to run `docker exec -it <redis-container> redis-cli FLUSHALL` so the new token replaces the cached one.
 
-## Security
-
-### npm audit
-
-Check for vulnerabilities in dependencies:
-
-```bash
-npm audit
-```
-
-Fix vulnerabilities automatically (when a safe upgrade exists):
-
-```bash
-npm audit fix
-```
-
 ## Endpoints
+
+With the environment configured and the containers running, the server exposes the following routes.
 
 The required call order is: **auth first, then instagram routes**. The auth endpoint resolves and caches the user ID in Redis. Instagram endpoints require both a valid access token and a cached user ID to work.
 
@@ -210,6 +185,41 @@ Returns API metadata (author, version).
 **`GET /api/v1/instagram/user/profile`**
 Returns the Instagram profile of the authenticated user: `id`, `username`, `account_type`, `media_count`.
 
+## Testing
+
+The test suite exercises the endpoints above end-to-end against a real (isolated) Redis instance using Jest and Supertest.
+
+1. Navigate to the project folder
+2. Execute: `npm test`
+
+For coverage report:
+
+```bash
+npm run test:coverage
+```
+
+## Security Audit
+
+Beyond runtime tests, dependencies should be audited regularly for known vulnerabilities.
+
+### npm audit
+
+Check for vulnerabilities in dependencies:
+
+```bash
+npm audit
+```
+
+Fix vulnerabilities automatically (when a safe upgrade exists):
+
+```bash
+npm audit fix
+```
+
 ## Known Issues
 
 None at the moment.
+
+## Portfolio link
+
+[https://diegolibonati.com.ar/#/project/instabridge](https://diegolibonati.com.ar/#/project/instabridge)
