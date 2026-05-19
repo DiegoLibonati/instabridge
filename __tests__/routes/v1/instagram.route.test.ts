@@ -46,12 +46,6 @@ describe("instagram.route", () => {
   });
 
   describe(`GET ${baseUrl}/user/profile`, () => {
-    beforeEach(() =>
-      jest.spyOn(console, "error").mockImplementation(() => {
-        // Empty fn
-      })
-    );
-
     it("should return 200 with SUCCESS_GET_USER_PROFILE code and profile data", async () => {
       (SessionService.getAccessToken as jest.Mock).mockResolvedValue("test_token");
       (SessionService.getUserId as jest.Mock).mockResolvedValue("12345");
@@ -78,7 +72,7 @@ describe("instagram.route", () => {
       expect(res.body).toMatchObject({ code: "NOT_FOUND_USER_ID" });
     });
 
-    it("should return 500 when InstagramService.getProfile throws", async () => {
+    it("should return 500 with ERROR_GENERIC when InstagramService.getProfile throws", async () => {
       (SessionService.getAccessToken as jest.Mock).mockResolvedValue("test_token");
       (SessionService.getUserId as jest.Mock).mockResolvedValue("12345");
       (InstagramService.getProfile as jest.Mock).mockRejectedValue(new Error("API error"));

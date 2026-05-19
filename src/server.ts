@@ -1,5 +1,6 @@
 import redisClient from "@/configs/redis.config";
 import { envs } from "@/configs/env.config";
+import { logger } from "@/configs/logger.config";
 
 import app from "@/app";
 
@@ -11,7 +12,7 @@ let server: ReturnType<typeof app.listen>;
 
 const onInit = (): void => {
   const baseUrl = ENV === "development" ? `http://localhost:${PORT}` : BASE_URL;
-  console.log(`Server running in ${ENV} mode on ${baseUrl}`);
+  logger.info({ env: ENV, baseUrl }, `Server running in ${ENV} mode on ${baseUrl}`);
 };
 
 const shutdown = (): void => {

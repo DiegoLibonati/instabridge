@@ -1,4 +1,4 @@
-import type { Env } from "@/types/app";
+import type { Env, LogLevel } from "@/types/app";
 
 export interface Envs {
   PORT: Port;
@@ -11,6 +11,11 @@ export interface Envs {
   INSTAGRAM_USER_ACCESS_TOKEN: InstagramUserAccessToken;
   REDIS_HOST: RedisHost;
   REDIS_PORT: RedisPort;
+  LOG_LEVEL: LogLevel;
+  RATE_LIMIT_WINDOW_MS: number;
+  RATE_LIMIT_MAX: number;
+  BODY_LIMIT: string;
+  SEED_DEFAULT_DATA: boolean;
 }
 
 type Port = number;

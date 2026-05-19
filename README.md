@@ -25,6 +25,9 @@ It is fully containerized with Docker, includes separate environments for develo
 3. Express
 4. Redis
 5. Docker
+6. Zod
+7. Pino
+8. Helmet
 
 ## Libraries used
 
@@ -32,8 +35,12 @@ It is fully containerized with Docker, includes separate environments for develo
 
 ```
 "express": "^4.21.0"
-"morgan": "^1.10.1"
+"express-rate-limit": "^8.5.2"
+"helmet": "^8.1.0"
 "redis": "^4.6.13"
+"pino": "^10.3.1"
+"pino-http": "^11.0.0"
+"zod": "^4.4.3"
 ```
 
 #### devDependencies
@@ -42,7 +49,6 @@ It is fully containerized with Docker, includes separate environments for develo
 "@eslint/js": "^9.0.0"
 "@types/express": "^5.0.0"
 "@types/jest": "^30.0.0"
-"@types/morgan": "^1.9.10"
 "@types/node": "^22.0.0"
 "@types/supertest": "^6.0.2"
 "eslint": "^9.0.0"
@@ -52,6 +58,7 @@ It is fully containerized with Docker, includes separate environments for develo
 "husky": "^9.0.0"
 "jest": "^30.0.0"
 "lint-staged": "^15.0.0"
+"pino-pretty": "^13.1.3"
 "prettier": "^3.0.0"
 "supertest": "^7.0.0"
 "ts-jest": "^29.4.6"
@@ -75,28 +82,34 @@ The API will be available at `http://localhost:5050`.
 
 ## Env Keys
 
-The application reads the following variables from your `.env` at startup:
+The application reads the following variables from your `.env` at startup. Values are validated with Zod and the process exits if a required variable is missing or invalid.
 
-| Key                           | Description                                                                       |
-| ----------------------------- | --------------------------------------------------------------------------------- |
-| `PORT`                        | Port the HTTP server listens on (default: `5050`).                                |
-| `API_VERSION`                 | Current API version returned in responses.                                        |
-| `NODE_ENV`                    | Runtime environment (`development`, `production`, `test`).                        |
-| `BASE_URL`                    | Base URL of the deployed API (optional, used in production).                      |
-| `INSTAGRAM_API`               | Base URL for the Instagram Graph API.                                             |
-| `INSTAGRAM_API_VERSION`       | Instagram Graph API version (e.g. `v19.0`).                                       |
-| `INSTAGRAM_SECRET_CLIENT`     | Instagram app secret obtained from Meta Developer Portal.                         |
-| `INSTAGRAM_USER_ACCESS_TOKEN` | User access token generated from your Instagram app. See steps below.             |
-| `REDIS_HOST`                  | Redis host (`redis` when using Docker Compose, `host.docker.internal` otherwise). |
-| `REDIS_PORT`                  | Redis port (default: `6379`).                                                     |
-| `CHOKIDAR_USEPOLLING`         | Enable polling-based file watching for hot-reload in Docker on Windows.           |
-| `CHOKIDAR_INTERVAL`           | Polling interval in milliseconds (default: `100`).                                |
+| Key                           | Description                                                                                     |
+| ----------------------------- | ----------------------------------------------------------------------------------------------- |
+| `PORT`                        | Port the HTTP server listens on (default: `5050`).                                              |
+| `API_VERSION`                 | Current API version returned in responses (default: `0.0.1`).                                   |
+| `NODE_ENV`                    | Runtime environment: `development`, `production`, or `test` (default: `development`).           |
+| `BASE_URL`                    | Base URL of the deployed API (optional, used in production).                                    |
+| `SEED_DEFAULT_DATA`           | Whether to seed default data on startup (default: `false`).                                     |
+| `INSTAGRAM_API`               | Base URL for the Instagram Graph API.                                                           |
+| `INSTAGRAM_API_VERSION`       | Instagram Graph API version (e.g. `v19.0`).                                                     |
+| `INSTAGRAM_SECRET_CLIENT`     | Instagram app secret obtained from Meta Developer Portal.                                       |
+| `INSTAGRAM_USER_ACCESS_TOKEN` | User access token generated from your Instagram app. See steps below.                           |
+| `REDIS_HOST`                  | Redis host (`redis` when using Docker Compose, `host.docker.internal` otherwise).               |
+| `REDIS_PORT`                  | Redis port (default: `6379`).                                                                   |
+| `LOG_LEVEL`                   | Pino log level: `fatal`, `error`, `warn`, `info`, `debug`, `trace`, `silent` (default: `info`). |
+| `RATE_LIMIT_WINDOW_MS`        | Rate-limit window in milliseconds (default: `900000` — 15 minutes).                             |
+| `RATE_LIMIT_MAX`              | Maximum requests per window. `0` disables rate limiting (default: `0`).                         |
+| `BODY_LIMIT`                  | JSON / urlencoded body size limit, e.g. `100kb`, `1mb`, `1gb` (default: `1gb`).                 |
+| `CHOKIDAR_USEPOLLING`         | Enable polling-based file watching for hot-reload in Docker on Windows.                         |
+| `CHOKIDAR_INTERVAL`           | Polling interval in milliseconds (default: `100`).                                              |
 
 ```bash
 PORT="5050"
 API_VERSION="0.0.1"
 NODE_ENV=development
 BASE_URL=
+SEED_DEFAULT_DATA=false
 
 INSTAGRAM_API="https://graph.instagram.com"
 INSTAGRAM_API_VERSION="v19.0"
@@ -105,6 +118,16 @@ INSTAGRAM_USER_ACCESS_TOKEN="YOUR_ACCESS_TOKEN"
 
 REDIS_HOST="redis"
 REDIS_PORT="6379"
+
+# Logging (fatal | error | warn | info | debug | trace | silent)
+LOG_LEVEL=info
+
+# Rate limit (max=0 disables limiting; window in ms)
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX=0
+
+# JSON / urlencoded body size limit (e.g. 100kb, 1mb, 1gb)
+BODY_LIMIT=1gb
 
 CHOKIDAR_USEPOLLING=true
 CHOKIDAR_INTERVAL=100
@@ -154,11 +177,16 @@ The required call order is: **auth first, then instagram routes**. The auth endp
 
 ### Health
 
-| Method | Route     | Auth required |
-| ------ | --------- | ------------- |
-| GET    | `/health` | No            |
+| Method | Route                  | Auth required |
+| ------ | ---------------------- | ------------- |
+| GET    | `/api/v1/health/live`  | No            |
+| GET    | `/api/v1/health/ready` | No            |
 
-Returns `{ "status": "ok" }`. Used to verify the server is running.
+**`GET /api/v1/health/live`**
+Liveness probe. Returns `{ "code": "SUCCESS_HEALTH_LIVE", "message": "Service is alive.", "data": null }` when the process is up. Used by the production Docker `HEALTHCHECK`.
+
+**`GET /api/v1/health/ready`**
+Readiness probe. Returns `{ "code": "SUCCESS_HEALTH_READY", "message": "Service is ready.", "data": null }` when the service is ready to accept traffic.
 
 ---
 
@@ -196,6 +224,61 @@ For coverage report:
 
 ```bash
 npm run test:coverage
+```
+
+## Continuous Integration
+
+The repository ships with a **GitHub Actions** pipeline defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml). It runs automatically on every `push` and `pull_request` targeting the `main` branch.
+
+### Pipeline overview
+
+```
+                      ┌─── PR or push to main ───┐
+                      ▼                          ▼
+┌──────────────────────┐  ┌──────────────────┐  ┌──────────────────────┐
+│   lint-and-audit     │─▶│       test       │─▶│     docker-build     │
+│ eslint · prettier ·  │  │  jest --runInBand│  │ Dockerfile.dev/prod  │
+│ type-check · audit   │  │  + redis (docker)│  │ (matrix, no push)    │
+└──────────────────────┘  └──────────────────┘  └──────────────────────┘
+```
+
+Each job depends on the previous one through `needs:`, so a failure in `lint-and-audit` short-circuits `test`, and a failure in `test` short-circuits `docker-build`.
+
+### Validation jobs (run on every PR and push)
+
+1. **`lint-and-audit`** — `npm run lint` (ESLint with `typescript-eslint` strict + stylistic), `npm run format:check` (Prettier), `npm run type-check` (`tsc -p tsconfig.app.json --noEmit`) and `npm audit --audit-level=high`.
+2. **`test`** — `npm test` runs the full Jest suite (`--runInBand --verbose`). The global setup spins up the isolated Redis container declared in `test.docker-compose.yml`; the teardown brings it down with `down -v --remove-orphans`.
+3. **`docker-build`** — uses `docker/setup-buildx-action` + `docker/build-push-action` with a matrix over `Dockerfile.development` (tag `app:dev`) and `Dockerfile.production` (tag `app:prod`) to smoke-build both images in parallel. Images are **not pushed** to any registry.
+
+The production image also defines a runtime `HEALTHCHECK` against `/api/v1/health/live`, so a green `docker-build` is a strong signal that the container will report healthy.
+
+### Node version pinning
+
+All jobs use `actions/setup-node@v4` with `node-version-file: ".nvmrc"`, so the CI Node version is whatever is written in [`.nvmrc`](.nvmrc) (currently `22`). To upgrade Node across the project, bump `.nvmrc` and the `engines.node` field in `package.json` together — `.npmrc` ships with `engine-strict=true` so a mismatch fails the install locally.
+
+### Running the same checks locally
+
+```bash
+# lint-and-audit
+npm run lint
+npm run format:check
+npm run type-check
+npm audit --audit-level=high
+
+# test (needs Docker for the isolated Redis container)
+npm test
+
+# docker-build (matrix, locally)
+docker build -f Dockerfile.development -t app:dev .
+docker build -f Dockerfile.production  -t app:prod .
+```
+
+### Skipping CI
+
+To push a change without triggering the workflow (typo fixes, doc-only commits, etc.) use GitHub's standard marker in the commit message:
+
+```bash
+git commit -m "docs: fix typo in README [skip ci]"
 ```
 
 ## Security Audit

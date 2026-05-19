@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 
 import { AuthController } from "@/controllers/auth.controller";
 
@@ -24,22 +24,19 @@ const buildRes = (): Response => {
   return res as Response;
 };
 
+const buildNext = (): NextFunction => jest.fn();
+
 describe("auth.controller", () => {
   describe("getUserId", () => {
-    beforeEach(() =>
-      jest.spyOn(console, "error").mockImplementation(() => {
-        // Empty fn
-      })
-    );
-
     it("should return 200 with SUCCESS_GET_USER_ID code and auth data when successful", async () => {
       (SessionService.getAccessToken as jest.Mock).mockResolvedValue("test_token");
       (InstagramService.getAuthId as jest.Mock).mockResolvedValue(mockMe);
       (SessionService.setUserId as jest.Mock).mockResolvedValue("OK");
       const req: Request = buildReq();
       const res: Response = buildRes();
+      const next: NextFunction = buildNext();
 
-      await AuthController.getUserId(req, res);
+      await AuthController.getUserId(req, res, next);
 
       expect(SessionService.getAccessToken).toHaveBeenCalled();
       expect(InstagramService.getAuthId).toHaveBeenCalledWith("test_token");
@@ -50,21 +47,23 @@ describe("auth.controller", () => {
         message: "Successfully found the user id.",
         data: mockMe,
       });
+      expect(next).not.toHaveBeenCalled();
     });
 
-    it("should return 500 with ERROR_GENERIC when InstagramService.getAuthId throws", async () => {
+    it("should forward the error to next when InstagramService.getAuthId throws", async () => {
       (SessionService.getAccessToken as jest.Mock).mockResolvedValue("test_token");
-      (InstagramService.getAuthId as jest.Mock).mockRejectedValue(new Error("API error"));
+      const error: Error = new Error("API error");
+      (InstagramService.getAuthId as jest.Mock).mockRejectedValue(error);
       const req: Request = buildReq();
       const res: Response = buildRes();
+      const next: NextFunction = buildNext();
 
-      await AuthController.getUserId(req, res);
+      await AuthController.getUserId(req, res, next);
 
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        code: "ERROR_GENERIC",
-        message: "Something went wrong!",
-      });
+      expect(next).toHaveBeenCalledTimes(1);
+      expect(next).toHaveBeenCalledWith(error);
+      expect(res.status).not.toHaveBeenCalled();
+      expect(res.json).not.toHaveBeenCalled();
     });
 
     it("should not call setUserId when getAuthId throws", async () => {
@@ -72,22 +71,39 @@ describe("auth.controller", () => {
       (InstagramService.getAuthId as jest.Mock).mockRejectedValue(new Error("API error"));
       const req: Request = buildReq();
       const res: Response = buildRes();
+      const next: NextFunction = buildNext();
 
-      await AuthController.getUserId(req, res);
+      await AuthController.getUserId(req, res, next);
 
       expect(SessionService.setUserId).not.toHaveBeenCalled();
     });
 
-    it("should return 500 when setUserId throws", async () => {
+    it("should forward the error to next when setUserId throws", async () => {
       (SessionService.getAccessToken as jest.Mock).mockResolvedValue("test_token");
       (InstagramService.getAuthId as jest.Mock).mockResolvedValue(mockMe);
-      (SessionService.setUserId as jest.Mock).mockRejectedValue(new Error("Redis error"));
+      const error: Error = new Error("Redis error");
+      (SessionService.setUserId as jest.Mock).mockRejectedValue(error);
       const req: Request = buildReq();
       const res: Response = buildRes();
+      const next: NextFunction = buildNext();
 
-      await AuthController.getUserId(req, res);
+      await AuthController.getUserId(req, res, next);
 
-      expect(res.status).toHaveBeenCalledWith(500);
+      expect(next).toHaveBeenCalledWith(error);
+      expect(res.status).not.toHaveBeenCalled();
+    });
+
+    it("should forward the error to next when getAccessToken throws", async () => {
+      const error: Error = new Error("Redis down");
+      (SessionService.getAccessToken as jest.Mock).mockRejectedValue(error);
+      const req: Request = buildReq();
+      const res: Response = buildRes();
+      const next: NextFunction = buildNext();
+
+      await AuthController.getUserId(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(error);
+      expect(InstagramService.getAuthId).not.toHaveBeenCalled();
     });
   });
 });

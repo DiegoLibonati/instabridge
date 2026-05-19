@@ -1,5 +1,7 @@
 import { mockEnvs } from "@tests/__mocks__/envs.mock";
 
+process.env.NODE_ENV = "test";
+process.env.LOG_LEVEL = "silent";
 process.env.PORT = mockEnvs.PORT;
 process.env.API_VERSION = mockEnvs.API_VERSION;
 process.env.INSTAGRAM_API = mockEnvs.INSTAGRAM_API;
