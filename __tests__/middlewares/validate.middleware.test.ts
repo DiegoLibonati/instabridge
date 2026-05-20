@@ -4,6 +4,9 @@ import type { NextFunction, Request, RequestHandler, Response } from "express";
 
 import { validate } from "@/middlewares/validate.middleware";
 
+import { CODES_ERROR, CODES_NOT } from "@/constants/codes.constant";
+import { MESSAGES_NOT } from "@/constants/messages.constant";
+
 import { BadRequestError } from "@/errors/bad_request.error";
 
 const buildReq = (overrides: Partial<Request> = {}): Request => {
@@ -86,7 +89,7 @@ describe("validate.middleware", () => {
       expect(err).toBeInstanceOf(BadRequestError);
     });
 
-    it("should map id validation errors to NOT_VALID_ID", () => {
+    it("should map id validation errors to CODES_NOT.validId", () => {
       const schema: z.ZodType = z.object({ id: z.string() });
       const handler: RequestHandler = validate({ body: schema });
       const req: Request = buildReq({ body: { id: 99 } });
@@ -96,11 +99,11 @@ describe("validate.middleware", () => {
       handler(req, res, next);
 
       const err: BadRequestError = (next as jest.Mock).mock.calls[0][0] as BadRequestError;
-      expect(err.code).toBe("NOT_VALID_ID");
-      expect(err.message).toBe("Invalid id.");
+      expect(err.code).toBe(CODES_NOT.validId);
+      expect(err.message).toBe(MESSAGES_NOT.validId);
     });
 
-    it("should map username validation errors to NOT_VALID_USERNAME", () => {
+    it("should map username validation errors to CODES_NOT.validUsername", () => {
       const schema: z.ZodType = z.object({ username: z.string() });
       const handler: RequestHandler = validate({ body: schema });
       const req: Request = buildReq({ body: { username: 42 } });
@@ -110,10 +113,10 @@ describe("validate.middleware", () => {
       handler(req, res, next);
 
       const err: BadRequestError = (next as jest.Mock).mock.calls[0][0] as BadRequestError;
-      expect(err.code).toBe("NOT_VALID_USERNAME");
+      expect(err.code).toBe(CODES_NOT.validUsername);
     });
 
-    it("should map account_type validation errors to NOT_VALID_ACCOUNT_TYPE", () => {
+    it("should map account_type validation errors to CODES_NOT.validAccountType", () => {
       const schema: z.ZodType = z.object({ account_type: z.string() });
       const handler: RequestHandler = validate({ body: schema });
       const req: Request = buildReq({ body: { account_type: 42 } });
@@ -123,10 +126,10 @@ describe("validate.middleware", () => {
       handler(req, res, next);
 
       const err: BadRequestError = (next as jest.Mock).mock.calls[0][0] as BadRequestError;
-      expect(err.code).toBe("NOT_VALID_ACCOUNT_TYPE");
+      expect(err.code).toBe(CODES_NOT.validAccountType);
     });
 
-    it("should map media_count validation errors to NOT_VALID_MEDIA_COUNT", () => {
+    it("should map media_count validation errors to CODES_NOT.validMediaCount", () => {
       const schema: z.ZodType = z.object({ media_count: z.number() });
       const handler: RequestHandler = validate({ body: schema });
       const req: Request = buildReq({ body: { media_count: "ten" } });
@@ -136,10 +139,10 @@ describe("validate.middleware", () => {
       handler(req, res, next);
 
       const err: BadRequestError = (next as jest.Mock).mock.calls[0][0] as BadRequestError;
-      expect(err.code).toBe("NOT_VALID_MEDIA_COUNT");
+      expect(err.code).toBe(CODES_NOT.validMediaCount);
     });
 
-    it("should fall back to ERROR_VALIDATION for unknown field paths", () => {
+    it("should fall back to CODES_ERROR.validation for unknown field paths", () => {
       const schema: z.ZodType = z.object({ unknown_field: z.string() });
       const handler: RequestHandler = validate({ body: schema });
       const req: Request = buildReq({ body: { unknown_field: 42 } });
@@ -149,7 +152,7 @@ describe("validate.middleware", () => {
       handler(req, res, next);
 
       const err: BadRequestError = (next as jest.Mock).mock.calls[0][0] as BadRequestError;
-      expect(err.code).toBe("ERROR_VALIDATION");
+      expect(err.code).toBe(CODES_ERROR.validation);
       expect(err.status).toBe(400);
     });
 

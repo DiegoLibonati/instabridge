@@ -17,6 +17,7 @@ export interface MessagesNot {
 
 export interface MessagesError {
   generic: string;
+  validation: string;
 }
 
 export interface CodesSuccess {
@@ -38,4 +39,5 @@ export interface CodesNot {
 
 export interface CodesError {
   generic: "ERROR_GENERIC";
+  validation: "ERROR_VALIDATION";
 }

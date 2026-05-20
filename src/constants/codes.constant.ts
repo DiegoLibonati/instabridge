@@ -9,6 +9,7 @@ export const CODES_SUCCESS: CodesSuccess = {
 
 export const CODES_ERROR: CodesError = {
   generic: "ERROR_GENERIC",
+  validation: "ERROR_VALIDATION",
 };
 
 export const CODES_NOT: CodesNot = {
