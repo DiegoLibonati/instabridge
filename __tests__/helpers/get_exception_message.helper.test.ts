@@ -6,7 +6,7 @@ import { AppError } from "@/errors/app.error";
 import { BadRequestError } from "@/errors/bad_request.error";
 import { ConflictError } from "@/errors/conflict.error";
 import { NotFoundError } from "@/errors/not_found.error";
-import { UnauthorizedError } from "@/errors/unathorized.error";
+import { UnauthorizedError } from "@/errors/unauthorized.error";
 
 describe("get_exception_message.helper", () => {
   describe("getExceptionMessage", () => {

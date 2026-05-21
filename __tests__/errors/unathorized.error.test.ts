@@ -1,5 +1,5 @@
 import { AppError } from "@/errors/app.error";
-import { UnauthorizedError } from "@/errors/unathorized.error";
+import { UnauthorizedError } from "@/errors/unauthorized.error";
 
 describe("unathorized.error", () => {
   it("should set status to 401", () => {
