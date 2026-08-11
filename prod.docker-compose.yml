@@ -6,7 +6,8 @@ services:
     ports:
       - "5050:5050"
     env_file:
-      - ./.env
+      - path: ./.env
+        required: false
     depends_on:
       - redis
     networks:

@@ -1,6 +1,8 @@
 import redisClient from "@/configs/redis.config";
-import { envs } from "@/configs/env.config";
+import { envs, loadedEnvFiles } from "@/configs/env.config";
 import { logger } from "@/configs/logger.config";
+
+import { verifyRedisConnection } from "@/helpers/verify_redis_connection.helper";
 
 import app from "@/app";
 
@@ -12,7 +14,12 @@ let server: ReturnType<typeof app.listen>;
 
 const onInit = (): void => {
   const baseUrl = ENV === "development" ? `http://localhost:${PORT}` : BASE_URL;
-  logger.info({ env: ENV, baseUrl }, `Server running in ${ENV} mode on ${baseUrl}`);
+  logger.info(
+    { env: ENV, baseUrl, envFiles: loadedEnvFiles },
+    `Server running in ${ENV} mode on ${baseUrl}`
+  );
+
+  void verifyRedisConnection();
 };
 
 const shutdown = (): void => {
@@ -25,12 +32,15 @@ const shutdown = (): void => {
   }, 10000).unref();
 };
 
-const start = async (): Promise<void> => {
-  await redisClient.connect();
+const start = (): void => {
+  redisClient.connect().catch((error: unknown) => {
+    logger.warn({ error }, "Initial Redis connection failed.");
+  });
+
   server = app.listen(PORT, onInit);
 };
 
 process.on("SIGTERM", shutdown);
 process.on("SIGINT", shutdown);
 
-void start();
+start();

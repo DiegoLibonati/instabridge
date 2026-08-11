@@ -1,6 +1,11 @@
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+
 import type { Envs } from "@/types/env";
 
-import { envs } from "@/configs/env.config";
+import { envs, loadedEnvFiles } from "@/configs/env.config";
+
+const NONEXISTENT_CWD: string = join(tmpdir(), "env-config-test-nonexistent");
 
 describe("env.config", () => {
   it("should export INSTAGRAM_API from environment", () => {
@@ -88,7 +93,12 @@ describe("env.config", () => {
     }
   });
 
+  it("should expose loadedEnvFiles as an array of applied env files", () => {
+    expect(Array.isArray(loadedEnvFiles)).toBe(true);
+  });
+
   it("should throw when a required variable is missing at load time", () => {
+    jest.spyOn(process, "cwd").mockReturnValue(NONEXISTENT_CWD);
     const originalInstagramApi: string = process.env.INSTAGRAM_API ?? "";
     delete process.env.INSTAGRAM_API;
 
@@ -102,6 +112,7 @@ describe("env.config", () => {
   });
 
   it("should throw when a required variable is an empty string", () => {
+    jest.spyOn(process, "cwd").mockReturnValue(NONEXISTENT_CWD);
     const originalRedisHost: string = process.env.REDIS_HOST ?? "";
     process.env.REDIS_HOST = "";
 

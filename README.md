@@ -34,6 +34,7 @@ It is fully containerized with Docker, includes separate environments for develo
 #### Dependencies
 
 ```
+"dotenv": "^17.4.2"
 "express": "^4.21.0"
 "express-rate-limit": "^8.5.2"
 "helmet": "^8.1.0"
@@ -70,6 +71,8 @@ It is fully containerized with Docker, includes separate environments for develo
 
 ## Getting Started
 
+### Run with Docker
+
 > **Requirements:** [Docker Desktop](https://www.docker.com/products/docker-desktop/) must be installed.
 
 1. Clone the repository.
@@ -80,9 +83,36 @@ It is fully containerized with Docker, includes separate environments for develo
 
 The API will be available at `http://localhost:5050`.
 
+### Run without Docker
+
+> **Requirements:** Node.js `>=22` and a Redis instance reachable from your machine (e.g. a local install or a standalone `docker run -p 6379:6379 redis:7.0`).
+
+1. Clone the repository and navigate to the project folder.
+2. Install dependencies: `npm install`.
+3. Copy `.env.example` to `.env` and point the hosts at your local services — most importantly `REDIS_HOST=localhost` instead of the compose hostname `redis`.
+4. Start the API in watch mode: `npm run dev` (or `npm run build` + `npm start` for the compiled build).
+
+At startup the server verifies connectivity against Redis with capped exponential-backoff retries. If Redis is unreachable it only **warns** — the server keeps running and the Redis client reconnects on its own once the service is back. If you see those warnings, check that Redis is up and that `REDIS_HOST`/`REDIS_PORT` in your `.env` point to it.
+
+## Environment Files
+
+Environment variables are loaded by `src/configs/dotenv.config.ts` from a cascade of `.env` files before the Zod schema validates them. Precedence, highest first:
+
+1. Real environment variables (Docker `env_file`, CI, shell) — never overridden by any file.
+2. `.env.<NODE_ENV>.local`
+3. `.env.local`
+4. `.env.<NODE_ENV>`
+5. `.env`
+
+`NODE_ENV` itself resolves from the process environment first, then from `.env.local`, then from `.env`, and defaults to `development`.
+
+**Test mode is special:** when `NODE_ENV=test` only `.env.test.local` and `.env.test` are read, so a local `.env` used for development can never affect the test suite.
+
+The list of files that were actually applied is exported as `loadedEnvFiles` from `src/configs/env.config.ts` and logged in the server startup line (`envFiles: [...]`), so you can always see where your configuration came from. All `.env.*` variants except `.env.example` are git-ignored and docker-ignored.
+
 ## Env Keys
 
-The application reads the following variables from your `.env` at startup. Values are validated with Zod and the process exits if a required variable is missing or invalid.
+The application reads the following variables from the environment at startup, filling in anything missing from the [env file cascade](#environment-files). Values are validated with Zod and the process exits if a required variable is missing or invalid.
 
 | Key                           | Description                                                                                     |
 | ----------------------------- | ----------------------------------------------------------------------------------------------- |
@@ -95,7 +125,7 @@ The application reads the following variables from your `.env` at startup. Value
 | `INSTAGRAM_API_VERSION`       | Instagram Graph API version (e.g. `v19.0`).                                                     |
 | `INSTAGRAM_SECRET_CLIENT`     | Instagram app secret obtained from Meta Developer Portal.                                       |
 | `INSTAGRAM_USER_ACCESS_TOKEN` | User access token generated from your Instagram app. See steps below.                           |
-| `REDIS_HOST`                  | Redis host (`redis` when using Docker Compose, `host.docker.internal` otherwise).               |
+| `REDIS_HOST`                  | Redis host (`redis` when using Docker Compose, `localhost` when running without Docker).        |
 | `REDIS_PORT`                  | Redis port (default: `6379`).                                                                   |
 | `LOG_LEVEL`                   | Pino log level: `fatal`, `error`, `warn`, `info`, `debug`, `trace`, `silent` (default: `info`). |
 | `RATE_LIMIT_WINDOW_MS`        | Rate-limit window in milliseconds (default: `900000` — 15 minutes).                             |
