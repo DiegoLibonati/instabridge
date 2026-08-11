@@ -19,6 +19,11 @@ jest.mock("@/configs/env.config", () => ({
     INSTAGRAM_SECRET_CLIENT: "YOUR_SECRET_CLIENT",
     REDIS_HOST: "localhost",
     REDIS_PORT: "6379",
+    LOG_LEVEL: "silent",
+    RATE_LIMIT_WINDOW_MS: 900000,
+    RATE_LIMIT_MAX: 0,
+    BODY_LIMIT: "1gb",
+    SEED_DEFAULT_DATA: false,
   },
 }));
 

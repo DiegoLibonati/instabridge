@@ -33,8 +33,8 @@ const shutdown = (): void => {
 };
 
 const start = (): void => {
-  redisClient.connect().catch((error: unknown) => {
-    logger.warn({ error }, "Initial Redis connection failed.");
+  redisClient.connect().catch((err: unknown) => {
+    logger.warn({ err }, "Initial Redis connection failed.");
   });
 
   server = app.listen(PORT, onInit);
